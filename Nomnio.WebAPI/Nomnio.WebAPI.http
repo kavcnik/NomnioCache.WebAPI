@@ -1,0 +1,13 @@
+@Nomnio.WebAPI_HostAddress = http://localhost:5130
+
+### Get breach data for an email
+GET {{Nomnio.WebAPI_HostAddress}}/emails/test@example.com
+Accept: application/json
+
+### Add a breached email record
+POST {{Nomnio.WebAPI_HostAddress}}/emails/test@example.com
+Content-Type: application/json
+
+{
+  "details": "Breached in 2024 data leak"
+}
