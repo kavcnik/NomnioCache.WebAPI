@@ -6,11 +6,21 @@ using Nomnio.WebAPI.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("SwaggerPolicy", policy =>
+    {
+        policy
+            .AllowAnyOrigin()
+            .AllowAnyMethod()
+            .AllowAnyHeader();
+    });
+});
+
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// Simulated external data source
 builder.Services.AddSingleton<IDataSource, InMemoryDataSource>();
 
 builder.Services.Configure<CacheOptions>(
@@ -36,6 +46,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseCors("SwaggerPolicy");
 app.UseHttpsRedirection();
 
 app.UseExceptionHandler(errorApp =>

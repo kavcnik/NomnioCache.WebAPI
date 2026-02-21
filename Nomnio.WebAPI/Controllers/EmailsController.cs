@@ -3,6 +3,7 @@ using Nomnio.WebAPI.Contracts;
 using Nomnio.WebAPI.Contracts.Grains;
 using Nomnio.WebAPI.Contracts.Requests;
 using Nomnio.WebAPI.Services;
+using System.ComponentModel.DataAnnotations;
 
 namespace Nomnio.WebAPI.Controllers
 {
@@ -20,13 +21,13 @@ namespace Nomnio.WebAPI.Controllers
         [HttpGet("{email}")]
         [ProducesResponseType(typeof(CacheResult), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> Get([FromRoute] GetBreachedEmailRequest request, CancellationToken ct)
+        public async Task<IActionResult> Get([FromRoute, Required, EmailAddress] string email, CancellationToken ct)
         {
-            request.Email = EmailService.NormalizeEmail(request.Email);
-            var domain = EmailService.ExtractDomain(request.Email);
+            email = EmailService.NormalizeEmail(email);
+            var domain = EmailService.ExtractDomain(email);
 
             var grain = _grains.GetGrain<ICacheGrain>(domain);
-            var result = await grain.GetAsync(request.Email, ct);
+            var result = await grain.GetAsync(email, ct);
 
             if (!result.Found)
                 return NotFound();
@@ -38,7 +39,7 @@ namespace Nomnio.WebAPI.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
         public async Task<IActionResult> Post(
-            [FromRoute] string email,
+            [FromRoute, Required, EmailAddress] string email,
             [FromBody] AddBreachedEmailDetails body,
             CancellationToken ct)
         {

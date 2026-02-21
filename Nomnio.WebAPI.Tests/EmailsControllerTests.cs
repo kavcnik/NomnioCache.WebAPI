@@ -27,8 +27,8 @@ namespace Nomnio.WebAPI.Tests
             _grainFactory.GetGrain<ICacheGrain>("example.com", null)
                 .Returns(grain);
 
-            var request = new GetBreachedEmailRequest { Email = "test@example.com" };
-            var result = await _sut.Get(request, CancellationToken.None);
+            var email = "test@example.com";
+            var result = await _sut.Get(email, CancellationToken.None);
 
             Assert.IsType<NotFoundResult>(result);
         }
@@ -48,8 +48,8 @@ namespace Nomnio.WebAPI.Tests
             _grainFactory.GetGrain<ICacheGrain>("example.com", null)
                 .Returns(grain);
 
-            var request = new GetBreachedEmailRequest { Email = "test@example.com" };
-            var result = await _sut.Get(request, CancellationToken.None);
+            var email = "test@example.com";
+            var result = await _sut.Get(email, CancellationToken.None);
 
             var okResult = Assert.IsType<OkObjectResult>(result);
             Assert.Equal(cacheResult, okResult.Value);
